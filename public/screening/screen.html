@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="screen.css" rel="stylesheet" />
+    <title>Screen Display</title>
+</head>
+<body>
+    <button id="start" disabled>Start New Screen Capture</button>
+<br/>
+<button id="play-pause" disabled>Resume Capture</button>
+<button id="stop" disabled>Stop Capture</button>
+<p id="support-warning"></p>
+</br>
+<video id="output" aria-label="Live feed of the shared screen"></video>
+
+<h2>Warnings</h2>
+
+<p>If you are having trouble using the screen capture, please try other browsers, this may resolve your problem</p>
+</body>
+<script type="text/javascript">
+    let start = document.getElementById("start");
+let pause = document.getElementById("play-pause");
+let stop = document.getElementById("stop");
+let v = document.getElementById("output");
+
+if (navigator.getDisplayMedia) {
+  start.addEventListener("click", startCapture);
+  start.disabled = false;
+  pause.addEventListener("click", togglePlay);
+  stop.addEventListener("click", stopCapture);
+} else {
+  document.getElementById("support-warning").textContent =
+    "Not supported in this browser";
+}
+
+function startCapture() {
+  if (v.srcObject) {
+    stopCapture();
+  }
+  console.log("Requesting screenshare permission...");
+  navigator
+    .getDisplayMedia()
+    .then(processMedia)
+    .catch(e => console.log("Capture denied: ", e));
+}
+function processMedia(media) {
+  console.log("Capture acquired...");
+
+  let t = media.getTracks()[0];
+  console.log("Capture settings:", t.getSettings());
+
+  v.srcObject = media;
+  pause.disabled = false;
+  stop.disabled = false;
+  togglePlay();
+}
+function togglePlay() {
+  if (v.paused) {
+    v.play();
+    pause.textContent = "Pause Capture";
+  } else {
+    v.pause();
+    pause.textContent = "Resume Capture";
+  }
+}
+function stopCapture() {
+  if (v.srcObject) {
+    console.log("Stopping capture...");
+    v.srcObject.getTracks()[0].stop();
+    v.srcObject = null;
+  }
+  pause.disabled = true;
+  stop.disabled = true;
+}
+  </script>
+</html>

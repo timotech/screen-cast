@@ -1,0 +1,17 @@
+button[disabled] {
+  visibility: hidden;
+}
+button {
+  padding: 0.5rem;
+}
+#start {
+  font-weight: bold;
+}
+#output {
+  max-width: 100%;
+  object-fit: contain;
+  box-sizing: border-box;
+
+  border: solid gold;
+  background: #222;
+}
